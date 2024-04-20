@@ -1,6 +1,9 @@
+import json
+import math
 import os
 import os.path as osp
 
+import random
 import uuid
 from fastapi import FastAPI, UploadFile
 
@@ -29,14 +32,34 @@ async def root():
     return {"message": "root"}
 
 
+@app.get("/chat/data/{chatId}")
+def get_data(chatId: str):
+    gpt = gptObjects[chatId]
+    persona_data = gpt.get_persona_data().__dict__
+
+    age = int(persona_data['ageMin'])
+    gender = persona_data['gender'].lower()
+    number = random.randint(1, 5)
+
+    if age >= 15:
+        age = 10
+    elif age >= 20 and age < 30:
+        age = 20
+    elif age >= 30 and age < 40:
+        age = 30
+    elif age >= 40:
+        age = 40
+
+    return f"{age}{gender}{number}.jpg"
+
 @app.post("/chat/start")
 async def chatStart(data: ChatStartDto):
     chatId = str(uuid.uuid4())
 
-    gptObjects[chatId] = GPT(chatId)
+    gptObjects[chatId] = GPT(chatId, data)
     gpt = gptObjects[chatId]
 
-    gpt.create_persona(data.persona)
+    gpt.create_persona()
 
     return {"chatId": chatId}
 

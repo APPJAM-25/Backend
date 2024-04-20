@@ -9,10 +9,11 @@ from redisconn import Redis
 class GPT:
     """GPT 모시깽"""
 
-    def __init__(self, chatId) -> None:
+    def __init__(self, chatId, data) -> None:
         load_dotenv()
 
         self.chatId = chatId
+        self.data = data
         self.client = OpenAI()
         self.client.api_key = os.getenv("OPENAI_API_KEY")
         self.openai_url = "https://api.openai.com/v1/chat/completions"
@@ -21,13 +22,17 @@ class GPT:
         self.message_list = []
         self.rd = Redis()
 
-    def create_persona(self, data: PersonaInfo) -> None:
+    def get_persona_data(self):
+        """ 유저 데이터 리턴 """
+        return self.data.persona
+
+    def create_persona(self) -> None:
         """페르소나 생성"""
         prompt = f"""
-        You are {data.gender} with an age between {data.ageMin} and {data.ageMax} years.
-        you live in a region of Korea and has an MBTI of {data.mbti}.
-        The relationship is currently in a {data.relationship} state and you are currently in {data.romanticStatus}.
-        you use {'polite language to me' if data.polite else 'informal language to me'}.
+        You are {self.data.persona.gender} with an age between {self.data.persona.ageMin} and {self.data.persona.ageMax} years.
+        you live in a region of Korea and has an MBTI of {self.data.persona.mbti}.
+        The relationship is currently in a {self.data.persona.relationship} state and you are currently in {self.data.persona.romanticStatus}.
+        you use {'polite language to me' if self.data.persona.polite else 'informal language to me'}.
         The area you live in, education level, and occupation must be set, and the your characteristics, name, personality, behavior patterns, and interests must be set in detail and have a conversation with me.
         그리고 넌 한국어로 대답해야 해.
         """

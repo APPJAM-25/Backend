@@ -9,11 +9,11 @@ seconds = 5  # Duration of recording
 
 
 body_data = {
-    "user": {"name": "Hong gildong", "age": 19, "gender": "Men"},
+    "user": {"name": "Hong gildong", "age": 19, "gender": "man"},
     "persona": {
         "ageMin": 17,  # 나이 최소
         "ageMax": 19,  # 나이 최대
-        "gender": "women",  # 성별 (men, women)
+        "gender": "woman",  # 성별 (men, women)
         "mbti": "ENFP",  # MBTI
         "relationship": "friend",  # 관계
         "romanticStatus": "friend",  # 연애 상태
@@ -25,25 +25,28 @@ response = requests.post(
     "http://localhost:3000/chat/start", data=json.dumps(body_data), timeout=15
 )
 chat_id = response.json()["chatId"]
+response = requests.get(f"http://localhost:3000/chat/data/{chat_id}", timeout=30)
+print(response.json())
 
-cnt = 0
-while cnt < 3:
-    print("recoding...")
-    recording = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
-    sd.wait()
-    write("output.wav", fs, recording)
-    print("recoding end")
 
-    if (input("send? (y/n): ") or "n") == "n":
-        continue
+# cnt = 0
+# while cnt < 3:
+#     print("recoding...")
+#     recording = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
+#     sd.wait()
+#     write("output.wav", fs, recording)
+#     print("recoding end")
 
-    with open("output.wav", "rb") as f:
-        result = requests.post(
-            f"http://localhost:3000/chat/{chat_id}", files={"file": f}, timeout=30
-        )
+#     if (input("send? (y/n): ") or "n") == "n":
+#         continue
 
-        print(result.json())
-    cnt += 1
+#     with open("output.wav", "rb") as f:
+#         result = requests.post(
+#             f"http://localhost:3000/chat/{chat_id}", files={"file": f}, timeout=30
+#         )
 
-result = requests.post("http://localhost:3000/chat/end/12313", timeout=30)
-print(result.json())
+#         print(result.json())
+#     cnt += 1
+
+# result = requests.post("http://localhost:3000/chat/end/12313", timeout=30)
+# print(result.json())
