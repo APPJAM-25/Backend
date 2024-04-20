@@ -1,3 +1,5 @@
 **/tmp
 test.wav
 .env
+
+**/__pycache__/

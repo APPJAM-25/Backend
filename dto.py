@@ -3,5 +3,5 @@ from type import *
 
 
 class ChatStartDto(BaseModel):
-    a: Info
-    b: Info
+    user: UserInfo
+    persona: PersonaInfo
