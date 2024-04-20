@@ -2,4 +2,4 @@
 test.wav
 .env
 
-**/__pycache__/
+__pycache__/
