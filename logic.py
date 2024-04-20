@@ -9,9 +9,10 @@ from redisconn import Redis
 class GPT:
     """GPT 모시깽"""
 
-    def __init__(self) -> None:
+    def __init__(self, chatId) -> None:
         load_dotenv()
 
+        self.chatId = chatId
         self.client = OpenAI()
         self.client.api_key = os.getenv("OPENAI_API_KEY")
         self.openai_url = "https://api.openai.com/v1/chat/completions"
