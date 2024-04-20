@@ -40,8 +40,8 @@ def get_data(chatId: str):
     gpt = gptObjects[chatId]
     persona_data = gpt.get_persona_data().__dict__
 
-    age = int(persona_data['ageMin'])
-    gender = persona_data['gender'].lower()
+    age = int(persona_data["ageMin"])
+    gender = persona_data["gender"].lower()
     number = random.randint(1, 5)
 
     if age >= 15:
@@ -54,6 +54,7 @@ def get_data(chatId: str):
         age = 40
 
     return f"{age}{gender}{number}.jpg"
+
 
 @app.post("/chat/start")
 async def chatStart(data: ChatStartDto):
@@ -70,7 +71,7 @@ async def chatStart(data: ChatStartDto):
 @app.post("/chat/{chatId}/")
 async def chat(chatId: str, file: UploadFile):
     """채팅을 비동기 처리"""
-    filePath = osp.join(rootPath, "tmp", f"{chatId}.wav")
+    filePath = osp.join(rootPath, "tmp", f"{chatId}.m4a")
     with open(filePath, "wb") as f:
         f.write(file.file.read())
 
