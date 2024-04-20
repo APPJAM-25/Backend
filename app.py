@@ -4,6 +4,7 @@ import os.path as osp
 import uuid
 from fastapi import FastAPI, UploadFile
 
+from logic import GPT
 from stt import STT
 from sentiment import Sentiment
 from dto import ChatStartDto
@@ -15,6 +16,7 @@ stt = STT()
 sentiment = Sentiment()
 
 rd = redisConfig()
+gpt = GPT()
 
 rootPath = osp.dirname(osp.abspath(__file__))
 
@@ -36,6 +38,7 @@ async def chatStart(data: ChatStartDto):
 
 @app.post("/chat/{chatId}/")
 async def chat(chatId: str, file: UploadFile):
+    """ 채팅을 비동기 처리 """
     filePath = osp.join(rootPath, "tmp", f"{chatId}.wav")
     with open(filePath, "wb") as f:
         f.write(file.file.read())
@@ -45,6 +48,7 @@ async def chat(chatId: str, file: UploadFile):
     sentimentText = sentimentResult[0][0]["label"]
 
     rd.rpush(f"sentiment:{chatId}", sentimentText)
+    gpt.talk(text)
 
     return {"chatId": chatId, "text": text}
 
