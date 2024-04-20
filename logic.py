@@ -12,6 +12,13 @@ class GPT:
     def __init__(self, chatId, data) -> None:
         load_dotenv()
 
+        if data.persona.gender == "man":
+            name = "박수현"
+        else: 
+            name = "김이서"
+
+        data.persona.name = name
+
         self.chatId = chatId
         self.data = data
         self.client = OpenAI()
@@ -31,6 +38,7 @@ class GPT:
         prompt = f"""
         You are {self.data.persona.gender} with an age between {self.data.persona.ageMin} and {self.data.persona.ageMax} years.
         you live in a region of Korea and has an MBTI of {self.data.persona.mbti}.
+        Your name is {self.data.persona.name}.
         The relationship is currently in a {self.data.persona.relationship} state and you are currently in {self.data.persona.romanticStatus}.
         you use {'polite language to me' if self.data.persona.polite else 'informal language to me'}.
         The area you live in, education level, and occupation must be set, and the your characteristics, name, personality, behavior patterns, and interests must be set in detail and have a conversation with me.

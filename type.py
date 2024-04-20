@@ -8,6 +8,7 @@ class UserInfo(BaseModel):
 
 
 class PersonaInfo(BaseModel):
+    name: str | None
     ageMin: int  # 나이 최소
     ageMax: int  # 나이 최대
     gender: str  # 성별 (man, woman)
