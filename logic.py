@@ -14,10 +14,10 @@ class GPT:
 
         if data.persona.gender == "man":
             name = "박수현"
-        else: 
+        else:
             name = "김이서"
 
-        data.persona.name = name
+        self.name = name
 
         self.chatId = chatId
         self.data = data
@@ -38,7 +38,7 @@ class GPT:
         prompt = f"""
         You are {self.data.persona.gender} with an age between {self.data.persona.ageMin} and {self.data.persona.ageMax} years.
         you live in a region of Korea and has an MBTI of {self.data.persona.mbti}.
-        Your name is {self.data.persona.name}.
+        Your name is {self.name}.
         The relationship is currently in a {self.data.persona.relationship} state and you are currently in {self.data.persona.romanticStatus}.
         you use {'polite language to me' if self.data.persona.polite else 'informal language to me'}.
         The area you live in, education level, and occupation must be set, and the your characteristics, name, personality, behavior patterns, and interests must be set in detail and have a conversation with me.
@@ -116,7 +116,7 @@ class GPT:
         #     {"role": "assistant", "content": "나는 오늘 삼겹살 먹었어. 너는?"},
         #     {"role": "user", "content": "맛있었겠네"},
         # ]
-        
+
         request_messages = []
 
         for i in self.message_list:
@@ -138,7 +138,10 @@ class GPT:
 
         result = self.client.chat.completions.create(
             model=self.model,
-            messages=[{"role": "system", "content": "한국어로 대답해줘"}, {"role": "user", "content": str(request_messages)}],
+            messages=[
+                {"role": "system", "content": "한국어로 대답해줘"},
+                {"role": "user", "content": str(request_messages)},
+            ],
             temperature=0.3,
         )
 

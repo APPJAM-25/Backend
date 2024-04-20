@@ -53,7 +53,14 @@ def get_data(chatId: str):
     elif age >= 40:
         age = 40
 
-    return persona_data
+    return {
+        "name": gpt.name,
+        "age": str(age),
+        "gender": gender,
+        "mbti": persona_data["mbti"],
+        "relationship": persona_data["relationship"],
+        "romanticStatus": persona_data["romanticStatus"],
+    }
 
 
 @app.post("/chat/start")
