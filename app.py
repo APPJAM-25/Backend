@@ -33,7 +33,7 @@ async def root():
 async def chatStart(data: ChatStartDto):
     chatId = str(uuid.uuid4())
 
-    gptObjects[chatId] = GPT()
+    gptObjects[chatId] = GPT(chatId)
     gpt = gptObjects[chatId]
 
     gpt.create_persona(data.persona)
