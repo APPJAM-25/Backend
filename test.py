@@ -1,4 +1,5 @@
 import requests
+from logic import GPT
 
 with open("test.wav", "rb") as f:
     result = requests.post(
@@ -7,3 +8,6 @@ with open("test.wav", "rb") as f:
     )
 
     print(result.json())
+
+    gpt = GPT()
+    print(gpt.talk(result.json()['text']))
