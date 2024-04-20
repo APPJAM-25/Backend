@@ -3,31 +3,34 @@ import os.path as osp
 
 import uuid
 from dto import ChatStartDto
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, UploadFile
 
-app = Flask(__name__)
+app = FastAPI()
 rootPath = osp.dirname(osp.abspath(__file__))
 
-
-@app.route("/", methods=["GET"])
-def root():
-    return jsonify({"message": "root"})
+if osp.exists(osp.join(rootPath, "tmp")) is False:
+    os.mkdir(osp.join(rootPath, "tmp"))
 
 
-@app.route("/chat/start", methods=["POST"])
-def chatStart():
-    data = request.get_json()
-    data = ChatStartDto(data)
+@app.get("/")
+async def root():
+    return {"message": "root"}
+
+
+@app.post("/chat/start")
+async def chatStart(data: ChatStartDto):
     chatId = uuid.uuid4()
 
-    return jsonify({"chatId": chatId})
+    return {"chatId": chatId}
 
 
-@app.route("/chat/<string:chatId>", methods=["POST"])
-def chat():
-    chatId = uuid.UUID(request.headers.get("chatId"))
-    osp.join(rootPath, f"{chatId}.m4a")
-    # osp.join(rootPath, "chat", f"{chatId}.m4a")
+@app.post("/chat/{chatId}/")
+async def chat(chatId: str, file: UploadFile):
+    filePath = osp.join(rootPath, "tmp", f"{chatId}.m4a")
+    with open(filePath, "wb") as f:
+        f.write(file.file.read())
+
+    return {"chatId": chatId}
 
 
 if __name__ == "__main__":
