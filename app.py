@@ -52,22 +52,24 @@ async def chat(chatId: str, file: UploadFile):
     sentimentResult = await sentiment(text)
     sentimentText = sentimentResult[0][0]["label"]
 
-    rd.rpush(f"sentiment:{chatId}", sentimentText)
+    rd().rpush(f"sentiment:{chatId}", sentimentText)
 
     gpt = gptObjects[chatId]
     answer = gpt.talk(text)
 
     return {"chatId": chatId, "answer": answer}
 
+
 @app.post("/chat/end/{chatId}")
 def chatEnd(chatId: str):
     """
-        채팅을 끝내고 통계를 반환
+    채팅을 끝내고 통계를 반환
     """
     gpt = gptObjects[chatId]
     result = gpt.get_analyze()
     result = gpt.get_analyze()
     return result
+
 
 if __name__ == "__main__":
     import uvicorn
