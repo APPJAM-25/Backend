@@ -1,6 +1,7 @@
 import json
 import requests
 from logic import GPT
+import speech_recognition as sr
 
 
 body_data = {
@@ -36,5 +37,3 @@ with open("test.wav", "rb") as f:
 
     print(result.json())
 
-    gpt = GPT()
-    print(gpt.talk(result.json()['text']))

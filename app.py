@@ -44,15 +44,14 @@ async def chat(chatId: str, file: UploadFile):
     with open(filePath, "wb") as f:
         f.write(file.file.read())
 
-    # text = stt(filePath)
-    text = "얼마 전에 아파트 인테리어를 새로 했는데 그때 베란다에 방수 시트를 깔았어"
+    text = stt(filePath)
     sentimentResult = await sentiment(text)
     sentimentText = sentimentResult[0][0]["label"]
 
     rd.rpush(f"sentiment:{chatId}", sentimentText)
-    gpt.talk(text)
+    answer = gpt.talk(text)
 
-    return {"chatId": chatId, "text": text}
+    return {"chatId": chatId, "answer" : answer}
 
 
 if __name__ == "__main__":
