@@ -53,7 +53,7 @@ def get_data(chatId: str):
     elif age >= 40:
         age = 40
 
-    return [persona_data ,f"{age}{gender}{number}.jpg"]
+    return persona_data
 
 
 @app.post("/chat/start")
