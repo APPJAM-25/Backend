@@ -30,7 +30,7 @@ async def chatStart(data: ChatStartDto):
 
 @app.post("/chat/{chatId}/")
 async def chat(chatId: str, file: UploadFile):
-    filePath = osp.join(rootPath, "tmp", f"{chatId}.m4a")
+    filePath = osp.join(rootPath, "tmp", f"{chatId}.wav")
     with open(filePath, "wb") as f:
         f.write(file.file.read())
 
