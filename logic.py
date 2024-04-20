@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from type import PersonaInfo
 
+
 class GPT:
     """GPT 모시깽"""
 
@@ -17,11 +18,17 @@ class GPT:
         self.tool = self.generate_tool()
         self.message_list = []
 
-    def create_persona(self, data : PersonaInfo) -> None:
+    def create_persona(self, data: PersonaInfo) -> None:
         """페르소나 생성"""
-        propmt = f"""You are {data.gender} with an age between {data.ageMin} and {data.ageMax} years. you live in a region of Korea and has an MBTI of {data.mbti}. The relationship is currently in a {data.relationship} state 
-          and you are currently in {data.romanticStatus}. you use {'polite language to me' if data.polite else 'informal language to me'}. The area you live in, education level, and occupation must be set, and the your characteristics, name, personality, behavior patterns, and interests must be set in detail and have a conversation with me"""
-        self.message_list.append({"role": "system", "content": propmt})
+        prompt = f"""
+        You are {data.gender} with an age between {data.ageMin} and {data.ageMax} years.
+        you live in a region of Korea and has an MBTI of {data.mbti}.
+        The relationship is currently in a {data.relationship} state and you are currently in {data.romanticStatus}.
+        you use {'polite language to me' if data.polite else 'informal language to me'}.
+        The area you live in, education level, and occupation must be set, and the your characteristics, name, personality, behavior patterns, and interests must be set in detail and have a conversation with me.
+        그리고 넌 한국어로 대답해야 해.
+        """
+        self.message_list.append({"role": "system", "content": prompt})
 
     def get_message_list(self) -> list:
         """대화내역 리턴"""
@@ -31,7 +38,6 @@ class GPT:
         """GPT와 채팅"""
         self.message_list.append({"role": "user", "content": propmt})
 
-        print(self.message_list)
         completion_is_awkward = self.client.chat.completions.create(
             model=self.model,
             messages=self.message_list,
@@ -39,18 +45,18 @@ class GPT:
             tool_choice="auto",
         )
 
-        completion_answer = self.client.chat.completions.create(
-            model=self.model, messages=self.message_list
-        )
-
-        is_awkward = completion_is_awkward.choices[0].message.content is None
-        answer = completion_answer.choices[0].message.content
-
         # GPT가 해당 문장이 어색하다고 판단했다면
-        if is_awkward:
+        if completion_is_awkward.choices[0].message.content is None:
             pass
 
+        completion_answer = self.client.chat.completions.create(
+            model=self.model, messages=self.message_list, temperature=0.5
+        )
+
+        answer = completion_answer.choices[0].message.content
+
         self.message_list.append({"role": "assistant", "content": answer})
+        print(self.message_list)
         return answer
 
     def generate_tool(self):
@@ -60,7 +66,7 @@ class GPT:
                 "type": "function",
                 "function": {
                     "name": "is_not_awkward",
-                    "description": "Check whether the entered string is consistent with the previous sentence",
+                    "description": "Verify that the string you entered matches the previous sentence.",
                     "parameters": {
                         "type": "object",
                         "properties": {
