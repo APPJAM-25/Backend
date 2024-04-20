@@ -1,3 +1,4 @@
+import json
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -59,7 +60,7 @@ class GPT:
         answer = completion_answer.choices[0].message.content
 
         self.message_list.append({"role": "assistant", "content": answer})
-        print(self.message_list)
+        # print(self.message_list)
         return answer
 
     def generate_tool(self):
@@ -87,6 +88,7 @@ class GPT:
         return tool
 
     def get_analyze(self):
+        """ 통계 내기 """
         messages = [
             {"role": "system", "content": "ahljasldjaskd"},
             {"role": "user", "content": "hi"},
@@ -100,12 +102,22 @@ class GPT:
 
         for i in messages:
             role = i.get("role")
-
-            if role =='user':
-                type = "자신 :"
+            type = ""
+            
+            if role == "system":
+                continue
+            elif role =='user':
+                type = "자신 : "
             elif role == 'assistant':
-                type = "상대 :"
+                type = "상대 : "
 
             request_messages.append(type + i.get("content") + "\n")
 
-        request_messages.append("\n\n Analyze the above conversations and give a score on whether the context of the conversation was natural, whether you empathized well with what the other person said, whether you used a variety of vocabulary, whether the conversation continued, and whether the conversation was interesting and changing korean")
+        request_messages.append("\n\n Analyze the above conversations and give a score on whether the context of the conversation was natural, whether you empathized well with what the other person said, whether you used a variety of vocabulary, whether the conversation continued, and whether the conversation was interesting. Please display it in the form of “title”: “score” without additional explanation. The title of each item should be 'Naturalness', 'Empathy', 'Variety of vocabulary', 'Continuation', 'Interestingness' and expressed as a percentage.")
+        
+        result = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role" : "user", "content" : str(request_messages)}],
+        )
+
+        return result.choices[0].message.content
