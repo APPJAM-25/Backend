@@ -1,6 +1,9 @@
+import asyncio
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+
+from sentiment import Sentiment
 
 class GPT:
     """ GPT 모시깽 """
@@ -43,6 +46,7 @@ class GPT:
             pass
 
         self.message_list.append({"role": "system", "content": answer})
+        asyncio.run(self.analyze.analyze_emotion(answer))
         # self.analyze.analyze_emotion()
         return answer
     
@@ -72,10 +76,13 @@ class GPT:
 class Analyze:
     """ 감정 분석 및 통계 """
     def __init__(self) -> None:
-        pass
+        self.sentiment = Sentiment()
 
-    async def analyze_emotion(self, propmt) -> None:
+    async def analyze_emotion(self, propmt) -> str:
         """ 감정 분석 """
+        emotion = await self.sentiment(propmt)
+        print(emotion)
+        return emotion
         
 
     async def get_statistics(self) -> dict:

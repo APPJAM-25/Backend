@@ -19,7 +19,7 @@ class Sentiment:
             top_k=None,
         )
 
-    def __call__(self, text: str):
+    async def __call__(self, text: str):
         return self.classifier(text)
 
 
