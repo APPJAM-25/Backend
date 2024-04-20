@@ -2,10 +2,14 @@ import os
 import os.path as osp
 
 import uuid
-from dto import ChatStartDto
 from fastapi import FastAPI, UploadFile
 
+from stt import STT
+from dto import ChatStartDto
+
 app = FastAPI()
+stt = STT()
+
 rootPath = osp.dirname(osp.abspath(__file__))
 
 if osp.exists(osp.join(rootPath, "tmp")) is False:
@@ -30,7 +34,9 @@ async def chat(chatId: str, file: UploadFile):
     with open(filePath, "wb") as f:
         f.write(file.file.read())
 
-    return {"chatId": chatId}
+    text = stt(filePath)
+
+    return {"chatId": chatId, "text": text}
 
 
 if __name__ == "__main__":
