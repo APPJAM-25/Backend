@@ -124,7 +124,7 @@ class GPT:
 
             request_messages.append(type + i.get("content") + "\n")
 
-        request_messages.append("\n\n Analyze the above conversations and give a score on whether the context of the conversation was natural, whether you empathized well with what the other person said, whether you used a variety of vocabulary, whether the conversation continued, and whether the conversation was interesting. Please display it in the form of “title”: “score” with additional explanation. The title of each item should be 'Naturalness', 'Empathy', 'Variety of vocabulary', 'Continuation', 'Interestingness' and expressed as a score out of 100. 100 is the high score and 1 is the low score. Diverse vocabulary should be reduced by using abbreviations, slang, and new words. Please analyze it in more detailed numbers.")
+        request_messages.append("\n\n Analyze the above conversations and give a score on whether the context of the conversation was natural, whether you empathized well with what the other person said, whether you used a variety of vocabulary, whether the conversation continued, and whether the conversation was interesting. Please display it in the form of “title”: “score” with additional explanation. The title of each item should be 'Naturalness', 'Empathy', 'Variety of vocabulary', 'Continuation', 'Interestingness' and expressed as a score out of 100. 100 is the high score and 1 is the low score. Diverse vocabulary should be reduced by using abbreviations, slang, and new words. Please analyze it in more detailed numbers. 한국어로 써줘")
         
         result = self.client.chat.completions.create(
             model=self.model,
