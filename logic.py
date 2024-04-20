@@ -1,10 +1,8 @@
-import asyncio
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from sentiment import Sentiment
-
+from type import PersonaInfo
 
 class GPT:
     """GPT 모시깽"""
@@ -19,6 +17,12 @@ class GPT:
         self.tool = self.generate_tool()
         self.message_list = []
 
+    def create_persona(self, data : PersonaInfo) -> None:
+        """페르소나 생성"""
+        propmt = f"""You are {data.gender} with an age between {data.ageMin} and {data.ageMax} years. you live in a region of Korea and has an MBTI of {data.mbti}. The relationship is currently in a {data.relationship} state 
+          and you are currently in {data.romanticStatus}. you use {'polite language to me' if data.polite else 'informal language to me'}. The area you live in, education level, and occupation must be set, and the your characteristics, name, personality, behavior patterns, and interests must be set in detail and have a conversation with me"""
+        self.message_list.append({"role": "system", "content": propmt})
+
     def get_message_list(self) -> list:
         """대화내역 리턴"""
         return self.message_list
@@ -27,6 +31,7 @@ class GPT:
         """GPT와 채팅"""
         self.message_list.append({"role": "user", "content": propmt})
 
+        print(self.message_list)
         completion_is_awkward = self.client.chat.completions.create(
             model=self.model,
             messages=self.message_list,
@@ -45,7 +50,7 @@ class GPT:
         if is_awkward:
             pass
 
-        self.message_list.append({"role": "system", "content": answer})
+        self.message_list.append({"role": "assistant", "content": answer})
         return answer
 
     def generate_tool(self):

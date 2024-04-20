@@ -32,6 +32,7 @@ async def root():
 @app.post("/chat/start")
 async def chatStart(data: ChatStartDto):
     chatId = uuid.uuid4()
+    gpt.create_persona(data.persona)
 
     return {"chatId": chatId}
 
@@ -43,7 +44,8 @@ async def chat(chatId: str, file: UploadFile):
     with open(filePath, "wb") as f:
         f.write(file.file.read())
 
-    text = stt(filePath)
+    # text = stt(filePath)
+    text = "얼마 전에 아파트 인테리어를 새로 했는데 그때 베란다에 방수 시트를 깔았어"
     sentimentResult = await sentiment(text)
     sentimentText = sentimentResult[0][0]["label"]
 
