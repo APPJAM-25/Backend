@@ -9,13 +9,13 @@ from stt import STT
 from sentiment import Sentiment
 from dto import ChatStartDto
 
-from redisconn import redisConfig
+from redisconn import Redis
 
 app = FastAPI()
 stt = STT()
 sentiment = Sentiment()
 
-rd = redisConfig()
+rd = Redis()
 gptObjects = {}
 
 rootPath = osp.dirname(osp.abspath(__file__))

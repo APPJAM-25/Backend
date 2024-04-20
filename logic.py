@@ -3,6 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 from type import PersonaInfo
+from redisconn import Redis
 
 
 class GPT:
@@ -17,6 +18,7 @@ class GPT:
         self.model = "gpt-3.5-turbo"
         self.tool = self.generate_tool()
         self.message_list = []
+        self.rd = Redis()
 
     def create_persona(self, data: PersonaInfo) -> None:
         """페르소나 생성"""

@@ -5,13 +5,12 @@ import redis
 load_dotenv()
 
 
-def redisConfig():
-    try:
-        REDIS_HOST = os.getenv("REDIS_HOST")
-        REDIS_PORT = os.getenv("REDIS_PORT")
-        REDIS_DATABASE = os.getenv("REDIS_DATABASE")
-        rd = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DATABASE)
+class Redis:
+    def __init__(self):
+        self.host = os.getenv("REDIS_HOST")
+        self.port = os.getenv("REDIS_PORT")
+        self.db = os.getenv("REDIS_DATABASE")
+        self.rd = redis.Redis(host=self.host, port=self.port, db=self.db)
 
-        return rd
-    except:
-        raise Exception("Redis Connection Error")
+    def __call__(self):
+        return self.rd
