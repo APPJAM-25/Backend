@@ -49,8 +49,8 @@ class GPT:
         )
 
         # GPT가 해당 문장이 어색하다고 판단했다면
-        if completion_is_awkward.choices[0].message.content is None:
-            pass
+        # if completion_is_awkward.choices[0].message.content is None:
+        #     pass
 
         completion_answer = self.client.chat.completions.create(
             model=self.model, messages=self.message_list, temperature=0.5
@@ -85,3 +85,27 @@ class GPT:
         ]
 
         return tool
+
+    def get_analyze(self):
+        messages = [
+            {"role": "system", "content": "ahljasldjaskd"},
+            {"role": "user", "content": "hi"},
+            {"role": "assistant", "content": "hello"},
+            {"role": "user", "content": "my name is Sara"},
+            {"role": "assistant", "content": "my name is gildong"},
+            {"role": "user", "content": "bye"},
+        ]
+
+        request_messages = []
+
+        for i in messages:
+            role = i.get("role")
+
+            if role =='user':
+                type = "자신 :"
+            elif role == 'assistant':
+                type = "상대 :"
+
+            request_messages.append(type + i.get("content") + "\n")
+
+        request_messages.append("\n\n Analyze the above conversations and give a score on whether the context of the conversation was natural, whether you empathized well with what the other person said, whether you used a variety of vocabulary, whether the conversation continued, and whether the conversation was interesting and changing korean")

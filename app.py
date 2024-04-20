@@ -59,6 +59,16 @@ async def chat(chatId: str, file: UploadFile):
 
     return {"chatId": chatId, "answer": answer}
 
+@app.post("/chat/end/{chatId}")
+def chatEnd(chatId: str):
+    """
+        채팅을 끝내고 통계를 반환
+    """
+    # gpt = gptObjects[chatId]
+    # result = gpt.get_analyze()
+    gpt = GPT()
+    result = gpt.get_analyze()
+    return result
 
 if __name__ == "__main__":
     import uvicorn
