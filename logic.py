@@ -1,4 +1,3 @@
-import json
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -42,7 +41,7 @@ class GPT:
         """GPT와 채팅"""
         self.message_list.append({"role": "user", "content": prompt})
 
-        completion_is_awkward = self.client.chat.completions.create(
+        self.client.chat.completions.create(
             model=self.model,
             messages=self.message_list,
             tools=self.tool,
@@ -89,26 +88,25 @@ class GPT:
 
     def get_analyze(self):
         """ 통계 내기 """
-        messages = [
-            {"role": "system", "content": """
-                You are women with an age between 17 and 19 years.
-        you live in a region of Korea and has an MBTI of ENFP.
-        The relationship is currently in a Friend state and you are currently in Lover.
-        you use informal language to me.
-        The area you live in, education level, and occupation must be set, and the your characteristics, name, personality, behavior patterns, and interests must be set in detail and have a conversation with me.
-        Diverse vocabulary should be reduced by using abbreviations, slang, and new words. Please analyze it in more detailed numbers.
-        그리고 넌 한국어로 대답해야 해.
-            """},
-            {"role": "user", "content": "안녕?"},
-            {"role": "assistant", "content": "안녕"},
-            {"role": "user", "content": "오늘 점심은 뭐 먹었어?"},
-            {"role": "assistant", "content": "나는 오늘 삼겹살 먹었어. 너는?"},
-            {"role": "user", "content": "맛있었겠네"},
-        ]
+        # messages = [
+        #     {"role": "system", "content": """
+        #         You are women with an age between 17 and 19 years.
+        #         you live in a region of Korea and has an MBTI of ENFP.
+        #         The relationship is currently in a Friend state and you are currently in Lover.
+        #         you use informal language to me.
+        #         The area you live in, education level, and occupation must be set, and the your characteristics, name, personality, behavior patterns, and interests must be set in detail and have a conversation with me.
+        #         그리고 넌 한국어로 대답해야 해.
+        #     """},
+        #     {"role": "user", "content": "안녕?"},
+        #     {"role": "assistant", "content": "안녕"},
+        #     {"role": "user", "content": "오늘 점심은 뭐 먹었어?"},
+        #     {"role": "assistant", "content": "나는 오늘 삼겹살 먹었어. 너는?"},
+        #     {"role": "user", "content": "맛있었겠네"},
+        # ]
 
         request_messages = []
 
-        for i in messages:
+        for i in self.message_list:
             role = i.get("role")
             type = ""
             
@@ -121,11 +119,12 @@ class GPT:
 
             request_messages.append(type + i.get("content") + "\n")
 
-        request_messages.append("\n\n Analyze the above conversations and give a score on whether the context of the conversation was natural, whether you empathized well with what the other person said, whether you used a variety of vocabulary, whether the conversation continued, and whether the conversation was interesting. Please display it in the form of “title”: “score” with additional explanation. The title of each item should be 'Naturalness', 'Empathy', 'Variety of vocabulary', 'Continuation', 'Interestingness' and expressed as a score out of 100. 100 is the high score and 1 is the low score. ")
+        request_messages.append("\n\n Analyze the above conversations and give a score on whether the context of the conversation was natural, whether you empathized well with what the other person said, whether you used a variety of vocabulary, whether the conversation continued, and whether the conversation was interesting. Please display it in the form of “title”: “score” with additional explanation. The title of each item should be 'Naturalness', 'Empathy', 'Variety of vocabulary', 'Continuation', 'Interestingness' and expressed as a score out of 100. 100 is the high score and 1 is the low score. Diverse vocabulary should be reduced by using abbreviations, slang, and new words. Please analyze it in more detailed numbers.")
         
         result = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role" : "user", "content" : str(request_messages)}],
+            temperature=0.3
         )
 
         return result.choices[0].message.content

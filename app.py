@@ -64,9 +64,8 @@ def chatEnd(chatId: str):
     """
         채팅을 끝내고 통계를 반환
     """
-    # gpt = gptObjects[chatId]
-    # result = gpt.get_analyze()
-    gpt = GPT(chatId)
+    gpt = gptObjects[chatId]
+    # gpt = GPT(chatId)
     result = gpt.get_analyze()
     return result
 
