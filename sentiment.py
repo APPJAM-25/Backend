@@ -1,4 +1,7 @@
+import os
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 class Sentiment:

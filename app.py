@@ -16,7 +16,7 @@ stt = STT()
 sentiment = Sentiment()
 
 rd = redisConfig()
-gpt = GPT()
+gptObjects = {}
 
 rootPath = osp.dirname(osp.abspath(__file__))
 
@@ -31,7 +31,11 @@ async def root():
 
 @app.post("/chat/start")
 async def chatStart(data: ChatStartDto):
-    chatId = uuid.uuid4()
+    chatId = str(uuid.uuid4())
+
+    gptObjects[chatId] = GPT()
+    gpt = gptObjects[chatId]
+
     gpt.create_persona(data.persona)
 
     return {"chatId": chatId}
@@ -39,7 +43,7 @@ async def chatStart(data: ChatStartDto):
 
 @app.post("/chat/{chatId}/")
 async def chat(chatId: str, file: UploadFile):
-    """ 채팅을 비동기 처리 """
+    """채팅을 비동기 처리"""
     filePath = osp.join(rootPath, "tmp", f"{chatId}.wav")
     with open(filePath, "wb") as f:
         f.write(file.file.read())
@@ -49,11 +53,14 @@ async def chat(chatId: str, file: UploadFile):
     sentimentText = sentimentResult[0][0]["label"]
 
     rd.rpush(f"sentiment:{chatId}", sentimentText)
+
+    gpt = gptObjects[chatId]
     answer = gpt.talk(text)
 
-    return {"chatId": chatId, "answer" : answer}
+    return {"chatId": chatId, "answer": answer}
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=3000)

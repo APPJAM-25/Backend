@@ -3,3 +3,4 @@ test.wav
 .env
 
 __pycache__/
+output.wav
