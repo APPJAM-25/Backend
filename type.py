@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Image(BaseModel):
+class Info(BaseModel):
     age: int
     gender: str
     mbti: str
