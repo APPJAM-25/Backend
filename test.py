@@ -26,23 +26,30 @@ response = requests.post(
 )
 chat_id = response.json()["chatId"]
 
-while 1:
-    print("recoding...")
-    recording = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
-    sd.wait()
-    write("output.wav", fs, recording)
-    print("recoding end")
+response = requests.get(f"http://localhost:3000/chat/data/{chat_id}", timeout=15)
+print(response.json())
+# response = requests.post(
+#     f"http://localhost:3000/chat/{chat_id}", timeout=30
+# )
 
-    if (input("send? (y/n): ") or "n") == "n":
-        continue
 
-    with open("output.wav", "rb") as f:
-        result = requests.post(
-            f"http://localhost:3000/chat/{chat_id}", files={"file": f}, timeout=30
-        )
+# while 1:
+#     print("recoding...")
+#     recording = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
+#     sd.wait()
+#     write("output.wav", fs, recording)
+#     print("recoding end")
 
-        with open("output.mp3", "wb") as f:
-            f.write(result.content)
+#     if (input("send? (y/n): ") or "n") == "n":
+#         continue
 
-result = requests.post("http://localhost:3000/chat/end/12313", timeout=30)
-print(result.json())
+#     with open("output.wav", "rb") as f:
+#         result = requests.post(
+#             f"http://localhost:3000/chat/{chat_id}", files={"file": f}, timeout=30
+#         )
+
+#         with open("output.mp3", "wb") as f:
+#             f.write(result.content)
+
+# result = requests.post("http://localhost:3000/chat/end/12313", data=json.dumps(body_data), timeout=30)
+# print(result.json())
