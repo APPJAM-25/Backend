@@ -6,11 +6,16 @@ from fastapi import FastAPI, UploadFile
 
 from logic import GPT
 from stt import STT
+from sentiment import Sentiment
 from dto import ChatStartDto
+
+from redisconn import redisConfig
 
 app = FastAPI()
 stt = STT()
-gpt = GPT()
+sentiment = Sentiment()
+
+rd = redisConfig()
 
 rootPath = osp.dirname(osp.abspath(__file__))
 
@@ -38,7 +43,10 @@ async def chat(chatId: str, file: UploadFile):
         f.write(file.file.read())
 
     text = stt(filePath)
-    gpt.talk(text)
+    sentimentResult = sentiment(text)
+    sentimentText = sentimentResult[0][0]["label"]
+
+    rd.rpush(f"sentiment:{chatId}", sentimentText)
 
     return {"chatId": chatId, "text": text}
 
