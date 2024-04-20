@@ -44,7 +44,7 @@ async def chat(chatId: str, file: UploadFile):
         f.write(file.file.read())
 
     text = stt(filePath)
-    sentimentResult = sentiment(text)
+    sentimentResult = await sentiment(text)
     sentimentText = sentimentResult[0][0]["label"]
 
     rd.rpush(f"sentiment:{chatId}", sentimentText)

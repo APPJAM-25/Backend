@@ -46,7 +46,7 @@ class GPT:
             pass
 
         self.message_list.append({"role": "system", "content": answer})
-        asyncio.run(self.analyze.analyze_emotion(answer))
+        self.analyze.analyze_emotion(answer)
         # self.analyze.analyze_emotion()
         return answer
     
