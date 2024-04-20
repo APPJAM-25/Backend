@@ -90,7 +90,7 @@ async def chat(chatId: str, file: UploadFile):
 
     gpt = gptObjects[chatId]
     answer = gpt.talk(text)
-    gender = gpt.data.gender
+    gender = gpt.data.persona.gender
 
     tts(chatId, gender, answer)
 

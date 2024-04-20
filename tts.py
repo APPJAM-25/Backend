@@ -15,7 +15,7 @@ class TTS:
         self._client = OpenAI()
 
     def __call__(self, chatId, gender, input):
-        if gender != "man":  # 반대
+        if gender == "man":  # 반대
             voice = "onyx"
         else:
             voice = "nova"
