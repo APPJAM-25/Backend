@@ -6,9 +6,11 @@ import os.path as osp
 import random
 import uuid
 from fastapi import FastAPI, UploadFile
+from fastapi.responses import FileResponse
 
 from logic import GPT
 from stt import STT
+from tts import TTS
 from sentiment import Sentiment
 from dto import ChatStartDto
 
@@ -16,6 +18,7 @@ from redisconn import Redis
 
 app = FastAPI()
 stt = STT()
+tts = TTS()
 sentiment = Sentiment()
 
 rd = Redis()
@@ -75,22 +78,26 @@ async def chat(chatId: str, file: UploadFile):
     sentimentResult = await sentiment(text)
     sentimentText = sentimentResult[0][0]["label"]
 
-    rd.rpush(f"sentiment:{chatId}", sentimentText)
+    rd().rpush(f"sentiment:{chatId}", sentimentText)
 
     gpt = gptObjects[chatId]
     answer = gpt.talk(text)
+    gender = gpt.data.gender
 
-    return {"chatId": chatId, "answer": answer}
+    tts(chatId, gender, answer)
+
+    return FileResponse(osp.join(rootPath, "tmp", f"{chatId}.mp3"))
+
 
 @app.post("/chat/end/{chatId}")
 def chatEnd(chatId: str):
     """
-        채팅을 끝내고 통계를 반환
+    채팅을 끝내고 통계를 반환
     """
     gpt = gptObjects[chatId]
-    # gpt = GPT(chatId)
     result = gpt.get_analyze()
     return result
+
 
 if __name__ == "__main__":
     import uvicorn
