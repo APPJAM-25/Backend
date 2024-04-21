@@ -9,15 +9,15 @@ seconds = 5  # Duration of recording
 
 
 body_data = {
-    "user": {"name": "민수", "age": 25, "gender": "man"},
+    "user": {"name": "수민", "age": 25, "gender": "man"},
     "persona": {
         "ageMin": 20,  # 나이 최소
         "ageMax": 30,  # 나이 최대
-        "gender": "woman",  # 성별 (man, woman)
-        "mbti": "ESTP",  # MBTI
-        "relationship": "초면",  # 관계
-        "romanticStatus": "소개팅",  # 연애 상태
-        "polite": True,  # 존댓말 여부
+        "gender": "man",  # 성별 (man, woman)
+        "mbti": "ISTP",  # MBTI
+        "relationship": "친구",  # 관계
+        "romanticStatus": "썸",  # 연애 상태
+        "polite": False,  # 존댓말 여부
     },
 }
 
